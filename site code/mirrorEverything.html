@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body style="height: 100vh">
+    <h1 style="text-align: center;">Mirror Everything by GroxicTinch</h1>
+    <h2 id='main' style="color: red; text-align: center;">Mirror code has not loaded!</h2>
+    <h3 id='progress' style="text-align: center;"></h3>
+    <textarea name="" id="log" style="width: 100%; height: 80%"></textarea>
+    
+    <div id='debug' style="display:none">
+      <textarea name="" id="debugjsonin" cols="100" rows="10"></textarea>
+      <textarea name="" id="debugjsonout" cols="100" rows="10" readonly=""></textarea><br>
+      <input type="button" name="ProcessJSON" value="ProcessJSON" onclick="processTextAreaJson()">
+      <input type="button" name="Quick Debug" value="Quick Debug" onclick="debugJson()">
+    </div>
+  </body>
+
+  <script src="mirrorEverything.js"></script>
+</html>
