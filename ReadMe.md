@@ -2,6 +2,8 @@ IGN: GroxicTinch
 
 I don't mind if others use my code but please give credit if you are going to, please and thank you :)
 
+Web to use to receive the tells
+https://darkvamprism.github.io/AnylandWebCodeSnippets/mirrorEverything.html
 
 # How to use
 The webpage listens for the following tell commands:
