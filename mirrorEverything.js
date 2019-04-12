@@ -8,14 +8,19 @@ msg("Awaiting input", "ready");
     10 = Swap all words "right" to "left" and vice-versa
     20 = Swamp given leftword with rightword
  */
-
 var mirrorDir = -1;  
 var wordLeft = "";
 var wordRight = "";
 
+AnylandTold("wordleft left", 1);
+AnylandTold("wordright right", 1);
+
+details(wordLeft + "   " + wordRight);
+
 // Anyland Commands START
 // When ... then tell web MESSAGE
 function AnylandTold(data, isAuthority) {
+  var test = data.substring(0,10);
   if(isAuthority) {
     mirrorDir = -1;
     if(data == "mirrorx") {
@@ -30,10 +35,10 @@ function AnylandTold(data, isAuthority) {
     } else if(data == "mirrorleftright") {
       mirrorDir = 10
       AnylandRequestThing(); // This calls AnylandGetThing
-    } else if(data.substring(1,9) == "wordleft " && data.length >= 10) {
-      wordLeft = data.substring(10);
-    } else if(data.substring(1,10) == "wordright " && data.length >= 11) {
-      wordRight = data.substring(11);
+    } else if(data.substring(0,9) == "wordleft " && data.length >= 9) {
+      wordLeft = data.substring(9);
+    } else if(data.substring(0,10) == "wordright " && data.length >= 10) {
+      wordRight = data.substring(10);
     } else if(data == "swapwords" && wordLeft != "" && wordRight != "") {
       // Thank you to Koolala for the suggestion of allowing the user to specify words :)
       mirrorDir = 20
@@ -162,4 +167,3 @@ function replaceAll(inString, replaceWhat, replaceTo){
 function AnylandSetThing(json) {
   details("AnylandSetThing Called");
 }
-
