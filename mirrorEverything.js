@@ -12,11 +12,6 @@ var mirrorDir = -1;
 var wordLeft = "";
 var wordRight = "";
 
-AnylandTold("wordleft left", 1);
-AnylandTold("wordright right", 1);
-
-details(wordLeft + "   " + wordRight);
-
 // Anyland Commands START
 // When ... then tell web MESSAGE
 function AnylandTold(data, isAuthority) {
@@ -130,40 +125,4 @@ function mirrorWords(json, wordLeft, wordRight) {
     return true;
   }
   return false;
-}
-
-// Utils
-function msg(message, tell) {
-  document.getElementById("progress").innerHTML = message;
-  sendTell(tell);
-}
-
-function details(message) {
-  document.getElementById("log").value += message + "\n";
-}
-
-function sendTell() {
-  if (window.AnylandTell) {
-    AnylandTell("some string");
-  }
-}
-
-function swapWords(inString, wordLeft, wordRight) {
-  inString = replaceAll(inString, wordLeft, "TEMP");
-  inString = replaceAll(inString, wordRight, wordLeft);
-  inString = replaceAll(inString, "TEMP", wordRight);
-
-  return inString;
-}
-
-function replaceAll(inString, replaceWhat, replaceTo){
-  // Solution found here at https://stackoverflow.com/a/17820079
-  replaceWhat = replaceWhat.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  var re = new RegExp(replaceWhat, 'g');
-
-  return inString.replace(re,replaceTo);
-}
-
-function AnylandSetThing(json) {
-  details("AnylandSetThing Called");
 }

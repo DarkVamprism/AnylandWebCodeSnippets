@@ -210,21 +210,6 @@ function processBodyPart(subJSONobj, bodyPartJSONobj) {
 }
 
 // Utils
-function msg(message, tell) {
-  document.getElementById("progress").innerHTML = message;
-  sendTell(tell);
-}
-
-function details(message) {
-  document.getElementById("log").value += message + "\n\n";
-}
-
-function sendTell() {
-  if (window.AnylandTell) {
-    AnylandTell("some string");
-  }
-}
-
 function addAttribute(JSONobj, attribute) {
   if(!JSONobj.hasOwnProperty("a")) {
       JSONobj.a = [attribute];
@@ -257,13 +242,6 @@ function generateHeadplate(thingid) {
 
 }
 
-function Get(yourUrl){
-    var Httpreq = new XMLHttpRequest();
-    Httpreq.open("GET",yourUrl,false);
-    Httpreq.send(null);
-    return Httpreq.responseText;          
-}
-
 // Debug
 if(showDebug) {
   document.getElementById("debug").style = "display: block";
@@ -282,8 +260,4 @@ function processTextAreaJson() {
   if(saveManny(document.getElementById("debugjsonin").value)) {
     loadManny(JSON.stringify(blankHeadJSON));
   } 
-}
-
-function AnylandSetThing(json) {
-  document.getElementById("debugjsonout").value = json;
 }
