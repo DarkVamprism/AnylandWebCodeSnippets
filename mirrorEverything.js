@@ -80,9 +80,9 @@ function mirror(json) {
       for(parti = 0; parti < JSONobj["p"].length; parti++) {
         var statei;
         for(statei = 0; statei < JSONobj["p"][parti]["s"].length; statei++) {
-          JSONobj["p"][parti]["s"][statei]["p"][mirrorDir] *= -1;
-          JSONobj["p"][parti]["s"][statei]["r"][mirrorDir+1 % 3] *= -1;
-          JSONobj["p"][parti]["s"][statei]["r"][mirrorDir+2 % 3] *= -1;
+          JSONobj["p"][parti]["s"][statei]["p"][anylandRequestType] *= -1;
+          JSONobj["p"][parti]["s"][statei]["r"][anylandRequestType+1 % 3] *= -1;
+          JSONobj["p"][parti]["s"][statei]["r"][anylandRequestType+2 % 3] *= -1;
         }
       }
     }
