@@ -7,8 +7,9 @@ msg("Awaiting input", "ready");
 /*  0 = X, 1 = Y, 2 = Z
     10 = Swap all words "right" to "left" and vice-versa
     20 = Swamp given leftword with rightword
+    -100 = Update to version on the server
  */
-var mirrorDir = -1;  
+var anylandRequestType = -1;  
 var wordLeft = "";
 var wordRight = "";
 
@@ -17,18 +18,18 @@ var wordRight = "";
 function AnylandTold(data, isAuthority) {
   var test = data.substring(0,10);
   if(isAuthority) {
-    mirrorDir = -1;
+    anylandRequestType = -1;
     if(data == "mirrorx") {
-      mirrorDir = 0;
+      anylandRequestType = 0;
       AnylandRequestThing(); // This calls AnylandGetThing
     } else if(data == "mirrory") {
-      mirrorDir = 1;
+      anylandRequestType = 1;
       AnylandRequestThing(); // This calls AnylandGetThing
     } else if(data == "mirrorz") {
-      mirrorDir = 2;
+      anylandRequestType = 2;
       AnylandRequestThing(); // This calls AnylandGetThing
     } else if(data == "mirrorleftright") {
-      mirrorDir = 10
+      anylandRequestType = 10
       AnylandRequestThing(); // This calls AnylandGetThing
     } else if(data.substring(0,9) == "wordleft " && data.length >= 9) {
       wordLeft = data.substring(9);
@@ -36,8 +37,11 @@ function AnylandTold(data, isAuthority) {
       wordRight = data.substring(10);
     } else if(data == "swapwords" && wordLeft != "" && wordRight != "") {
       // Thank you to Koolala for the suggestion of allowing the user to specify words :)
-      mirrorDir = 20
+      anylandRequestType = 20
       AnylandRequestThing(); // This calls AnylandGetThing
+    } else if(data == "updatetool") {
+      anylandRequestType = -100;
+      AnylandRequestThing();
     }
   } else {
     msg("Unauthorized user attempt", "noauth");
@@ -45,21 +49,23 @@ function AnylandTold(data, isAuthority) {
 }
 
 function AnylandGetThing(json) {
-  if(mirrorDir >= 0 && mirrorDir <= 2) {
+  if(anylandRequestType >= 0 && anylandRequestType <= 2) {
     mirror(json);
-  } else if(mirrorDir == 10){
+  } else if(anylandRequestType == 10) {
     mirrorLeftRight(json);
-  } else if(mirrorDir == 10){
+  } else if(anylandRequestType == 10) {
     mirrorWords(json, wordLeft, wordRight);
+  } else if(anylandRequestType == -100) {
+    startUpdate(json, "mirrortool", "mirrortool");
   }
 }
 // Anyland Commands END
 
 function mirror(json) {
   var dirString = "";
-  if(mirrorDir == 0) {dirString = "x"}
-  else if(mirrorDir == 1) {dirString = "y"}
-  else if(mirrorDir == 2) {dirString = "z"}
+  if(anylandRequestType == 0) {dirString = "x"}
+  else if(anylandRequestType == 1) {dirString = "y"}
+  else if(anylandRequestType == 2) {dirString = "z"}
 
   msg("Progress: Mirroring " + dirString, "mirroring" + dirString);
   if(json == "") {
@@ -69,7 +75,7 @@ function mirror(json) {
     var JSONobj = JSON.parse(json);
     details("Thing JSON successfully loaded into object");
 
-    if(mirrorDir >= 0) {
+    if(anylandRequestType >= 0) {
       var parti;
       for(parti = 0; parti < JSONobj["p"].length; parti++) {
         var statei;

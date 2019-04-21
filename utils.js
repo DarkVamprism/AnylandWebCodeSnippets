@@ -40,3 +40,28 @@ function Get(yourUrl){
 function AnylandSetThing(json) {
   details("AnylandSetThing Called");
 }
+
+// Auto-Update Function
+function checkUpdate(toolName, fileName) {
+  // [TODO]
+}
+
+function startUpdate(json, toolName, fileName) {
+  msg("Progress: Updating gt_"+ toolName, "updating");
+  if(json == "") {
+    msg("Progress: Update Aborted", "abort");
+    details("User is not editing an object, Update Aborted")
+  } else {
+    var JSONobj = JSON.parse(json);
+    details("JSON successfully loaded into object");
+
+    if(JSONobj["n"] == "gt_"+ toolName) {
+      msg("Progress: gt_"+ toolName +" Updated", "updated");
+      details("JSON downloaded into object");
+      AnylandSetThing(Get("./json/" + fileName));
+    } else {
+      msg("Progress: Updating Failed", "abort");
+      details("For safety only things called 'gt_"+ toolName +"' may be updated");
+    }
+  }
+}
