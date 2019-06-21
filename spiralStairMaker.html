@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spiral Staircase Maker by GroxicTinch</title>
+  </head>
+  <body>
+    <h1 id='codeIndicator' style="background-color: red; text-align: center;">Error loading javascript code!</h1>
+    <div id='main'>
+      <h3 id='progress' style="text-align: center;"></h3>
+      <div class='options'>
+        <div class='option-item'>
+          <label for="stepAmount">Steps</label>
+          <input id='stepAmount' type="number" value="5" min="1" style="font-size: 33px;">
+        </div>
+
+        <div class='option-item'>
+          <label for="rotAmount">Rotation amount(up to 7 decimal places)</label>
+          <input id='rotAmount' type="number" step=any value="45" min="-360" max="360" style="font-size: 33px;">
+        </div>
+
+        <div class='option-item'>
+          <label for="heightAmount">Height added to each step Amount(in meters/units, up to 7 decimal places)</label>
+          <input id='heightAmount' type="number" step=any value="0.1" style="font-size: 33px;">
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class='options'>
+        <div class='option-item'>
+          <button id='btnLoadPart' onclick="LoadStairParts()">Load Stair Parts</button>
+        </div>
+        <div class='option-item'>
+          <button id='btnUpdate' onclick="UpdateStairs()" disabled='true'>Update</button>
+        </div>
+      </div>
+      <textarea name="" id="log" style="width: 100%; height: 80%" readonly></textarea>
+    </div>
+  </body>
+  
+  <script src="/js/utils.js"></script>
+  <script src="/js/spiralStairMaker.js"></script>
+</html>
+
+<style>
+    body {
+      background-color: #404040;
+      color: #DDD;
+      font-size: 25px;
+    }
+
+    #log {
+      display: none;
+    }
+
+    #main {
+      display: none;
+    }
+
+    #codeIndicator {
+      margin: 0px;
+    }
+
+    .options {
+      display: flex;
+      flex-flow: wrap row;
+      justify-content: space-around;
+    }
+
+    .option-item {
+      display: flex;
+      flex-flow: column;
+      width: 30%;
+      justify-content: space-between;
+    }
+
+    .option-item label {
+      flex-grow: 1;
+    }
+
+    .option-item button {
+      font-size: 30px;
+      font-weight: bold;
+      padding: 50px 0px;
+      color: black;
+    }
+
+    input {
+      width: 90%;
+    }
+
+    #btnLoadPart {
+      background-color: green;
+    }
+
+    #btnUpdate {
+      background-color: #d0741f;
+    }
+</style>

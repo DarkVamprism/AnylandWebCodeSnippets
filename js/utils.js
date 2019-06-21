@@ -1,17 +1,23 @@
 // Utils
-function msg(message, tell) {
+function msg(message, tell = "") {
   document.getElementById("progress").innerHTML = message;
-  sendTell(tell);
+  if(tell != "") {
+    sendTell(tell);
+  }
 }
 
 function details(message) {
   document.getElementById("log").value += message + "\n";
 }
 
-function sendTell() {
+function sendTell(tell) {
   if (window.AnylandTell) {
-    AnylandTell("some string");
+    AnylandTell(tell);
   }
+}
+
+function printObj(obj) {
+  details(JSON.stringify(obj, null, 3));
 }
 
 function swapWords(inString, wordLeft, wordRight) {
