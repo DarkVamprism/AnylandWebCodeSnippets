@@ -42,6 +42,7 @@ function sendTell(tell) {
   if (window.AnylandTell) {
     AnylandTell(tell);
   }
+  console.log(tell);
 }
 
 function AnylandRequestThing() {

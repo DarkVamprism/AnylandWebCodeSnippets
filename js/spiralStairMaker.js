@@ -3,8 +3,6 @@ document.getElementById("main").style = "display: block;";
 document.getElementById("codeIndicator").style = "display: none;";
 document.getElementById("log").value = "";
 
-msg("Awaiting input", "ready");
-
 // loadType : 1 = Update, 2 = Undo
 var loadType = 0;
 
@@ -15,8 +13,11 @@ function AnylandTold(data, isAuthority) {
     RequestThing(1, 'Updating Stairs', 'update');
   } else if(data == "undo") {
     RequestThing(2, 'Undoing Stairs', 'undo');
+  } else if(data == "hidebtn") {
+    document.getElementById("btnUpdate").style = "display: none;";
+    document.getElementById("btnUndo").style = "display: none;";
   } else {
-    msg("Unauthorized user attempt", "noauth");
+    msg("Unauthorized user attempt", "abort");
   }
 }
 
@@ -81,6 +82,8 @@ function ModifyParts(JSONobj, stepAmount, rotAmount, heightAmount) {
           var posY = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1];
           var posZ = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2];
 
+          stairObj[i][_thing.parts.desc] = "Testing!";
+
           var posAsAngle = Math.atan2(posZ, posX);
           var radius = Math.hypot(posX, posZ);
 
@@ -143,3 +146,5 @@ function RemoveStairs(JSONobj) {
   msg("Complete", "complete");
   details("Object updated");
 }
+
+msg("Awaiting input", "ready");
