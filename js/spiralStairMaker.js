@@ -2,14 +2,10 @@
 document.getElementById("main").style = "display: block;";
 document.getElementById("codeIndicator").style = "display: none;";
 document.getElementById("log").value = "";
-document.getElementById("btnUpdate").disabled = true;
-document.getElementById("btnUndo").disabled = true;
 
 msg("Awaiting input", "ready");
 
-var stairDefaultObj;
-
-// loadType : 1 = Loading Stair, 2 = Updating
+// loadType : 1 = Update, 2 = Undo
 var loadType = 0;
 
 // Anyland Commands START
@@ -36,13 +32,12 @@ function AnylandGetThing(json) {
     details("Staircase JSON successfully loaded into object");
 
     if(loadType == 1) {
-      // Unfortunaltely this is the best way to clone an object
-      stairDefaultObj = JSON.parse(JSON.stringify(JSONobj[_thing.parts._]));
-      StairsLoaded();
+      var stepAmount = parseInt(document.getElementById("stepAmount").value);
+      var rotAmount = parseFloat(document.getElementById("rotAmount").value);
+      var heightAmount = parseFloat(document.getElementById("heightAmount").value);
+      ModifyParts(JSONobj, stepAmount, rotAmount, heightAmount);
     } else if(loadType == 2) {
-      ModifyParts(JSONobj);
-    } else if(loadType == 3) {
-      ReduceToOneStair(JSONobj);
+      RemoveStairs(JSONobj);
     }
 
     loadType = 0;
@@ -53,37 +48,15 @@ function AnylandGetThing(json) {
 }
 // Anyland Commands END
 
-function LoadStairParts() {
-  msg("Requesting Thing", "requesting");
-  loadType = 1;
+function RequestThing(type, message, tell = "") {
+  loadType = type;
+  msg(message, tell);
   AnylandRequestThing();
 }
 
-function StairsLoaded() {
-  document.getElementById("btnLoadPart").style = "background-color: #d0741f";
-  document.getElementById("btnLoadPart").innerHTML = "Re-load parts";
-
-  document.getElementById("btnUpdate").disabled = false;
-  document.getElementById("btnUpdate").style = "background-color: green";
-
-  document.getElementById("btnUndo").disabled = false;
-  msg("Thing loaded, hit update", "requesting");
-}
-
-function UpdateStairs() {
-  msg("Starting Update", "startingupdate");
-  loadType = 2;
-  AnylandRequestThing();
-}
-
-function ModifyParts(JSONobj) {
-  var stepAmount = parseInt(document.getElementById("stepAmount").value);
-  var rotAmount = parseFloat(document.getElementById("rotAmount").value);
-  var heightAmount = parseFloat(document.getElementById("heightAmount").value);
-
-  // Restore the default and also make an object we can edit
-  JSONobj["p"] = JSON.parse(JSON.stringify(stairDefaultObj));
-  var stairObj = JSON.parse(JSON.stringify(stairDefaultObj));
+function ModifyParts(JSONobj, stepAmount, rotAmount, heightAmount) {
+  // Make an object we can edit without affecting the original
+  var stairObj = JSON.parse(JSON.stringify(JSONobj[_thing.parts._]));
 
   var step;
   for(step = 1; step < stepAmount; step++) {
@@ -92,30 +65,51 @@ function ModifyParts(JSONobj) {
     // for each step, calculate each parts new pos and rot
     var i;
     for(i = 0; i < stairObj.length; i++) {
-      var stateIdx;
-      for(stateIdx = 0; stateIdx < stairObj[i][_thing.parts.states._].length; stateIdx++) {
-        // [TODO] each state, add tag to stairs
-        var posX = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0];
-        var posY = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1];
-        var posZ = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2];
-        var posAsAngle = (Math.atan2(posX, posZ));
-        var radius = Math.hypot(posX, posZ)
+      var scriptsOnFirstState;
+      if(stairObj[i][_thing.parts.states._][0].hasOwnProperty(_thing.parts.states.scripts)) {
+        scriptsOnFirstState = stairObj[i][_thing.parts.states._][0][_thing.parts.states.scripts].length;
+      } else {
+        scriptsOnFirstState = 0;
+      }
 
-        var newAngle = (posAsAngle + rotAmount) % 360;
+      if(scriptsOnFirstState > 0 && stairObj[i][_thing.parts.states._][0][_thing.parts.states.scripts][scriptsOnFirstState -1] == "[gt_stair]") {
+        stairObj.splice(i,1);
+        JSONobj[_thing.parts._].splice(i,1);
+        i--;
+      } else {
+        var stateIdx;
+        for(stateIdx = 0; stateIdx < stairObj[i][_thing.parts.states._].length; stateIdx++) {
+          var posX = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0];
+          var posY = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1];
+          var posZ = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2];
+          var posAsAngle = (Math.atan2(posX, posZ));
+          var radius = Math.hypot(posX, posZ)
 
-        posX = Math.sin(newAngle) * radius;
-        posY += heightAmount;
-        posZ = Math.cos(newAngle) * radius;
+          var newAngle = (posAsAngle + rotAmount) % 360;
 
-        stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0] = posX;
-        stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1] = posY;
-        stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2] = posZ;
+          posX = Math.sin(newAngle) * radius;
+          posY += heightAmount;
+          posZ = Math.cos(newAngle) * radius;
 
-        stairObj[i][_thing.parts.states._][0][_thing.parts.states.rot][1] += rotAmount;
+          stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0] = posX;
+          stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1] = posY;
+          stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2] = posZ;
 
-        stairObj[i][_thing.parts.states._][0][_thing.parts.states.rot][1] %= 360;
+          stairObj[i][_thing.parts.states._][0][_thing.parts.states.rot][1] += rotAmount;
 
-        JSONobj[_thing.parts._].push(JSON.parse(JSON.stringify(stairObj[i])));
+          stairObj[i][_thing.parts.states._][0][_thing.parts.states.rot][1] %= 360;
+
+          JSONobj[_thing.parts._].push(JSON.parse(JSON.stringify(stairObj[i])));
+
+          var length = JSONobj[_thing.parts._].length - 1;
+          if(scriptsOnFirstState <= 0) {
+            JSONobj[_thing.parts._][length][_thing.parts.states._][0][_thing.parts.states.scripts] = [
+              "[gt_stair]"
+            ];
+          } else {
+            JSONobj[_thing.parts._][length][_thing.parts.states._][0][_thing.parts.states.scripts][scriptsOnFirstState -1] = "[gt_stair]";
+          }
+        }
       }
     }
   }
@@ -127,14 +121,26 @@ function ModifyParts(JSONobj) {
   details("Object updated");
 }
 
-function UndoChanges() {
-  msg("Undoing changes", "undoing");
-  loadType = 3;
-  AnylandRequestThing();
-}
+function RemoveStairs(JSONobj) {
+  // Check every part for my tag and remove it if it does
+    var i;
+    for(i = 0; i < JSONobj[_thing.parts._].length; i++) {
+      var scriptsOnFirstState;
+      if(JSONobj[_thing.parts._][i][_thing.parts.states._][0].hasOwnProperty(_thing.parts.states.scripts)) {
+        scriptsOnFirstState = JSONobj[_thing.parts._][i][_thing.parts.states._][0][_thing.parts.states.scripts].length;
+      } else {
+        scriptsOnFirstState = 0;
+      }
 
-function ReduceToOneStair(JSONobj) {
-  JSONobj["p"] = JSON.parse(JSON.stringify(stairDefaultObj));
+      if(scriptsOnFirstState > 0 && JSONobj[_thing.parts._][i][_thing.parts.states._][0][_thing.parts.states.scripts][scriptsOnFirstState -1] == "[gt_stair]") {
+        JSONobj[_thing.parts._].splice(i,1);
+        i--;
+      }
+  }
+
   json = JSON.stringify(JSONobj);
   AnylandSetThing(json);
+
+  msg("Complete", "complete");
+  details("Object updated");
 }

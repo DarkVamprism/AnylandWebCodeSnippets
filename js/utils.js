@@ -44,8 +44,15 @@ function sendTell(tell) {
   }
 }
 
+function AnylandRequestThing() {
+  if (!window.AnylandTell) {
+    AnylandGetThing("{\"v\":9,\"a\":[7],\"p\":[{\"b\":5,\"s\":[{\"p\":[0,0,0],\"r\":[0,0,0],\"s\":[0.1000021,0.1000061,0.4600464],\"c\":[1,1,1]}]},{\"b\":14,\"s\":[{\"p\":[1,1,0],\"r\":[90,90,0],\"s\":[0.06001307,0.06001284,0.0600025],\"c\":[1,1,1]}]}]}");
+  }
+}
+
 function AnylandSetThing(json) {
   details("AnylandSetThing Called");
+  console.log(JSON.parse(json));
 }
 
 // Auto-Update Function
