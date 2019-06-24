@@ -82,14 +82,15 @@ function ModifyParts(JSONobj, stepAmount, rotAmount, heightAmount) {
           var posX = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0];
           var posY = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1];
           var posZ = stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][2];
-          var posAsAngle = (Math.atan2(posX, posZ));
-          var radius = Math.hypot(posX, posZ)
 
-          var newAngle = (posAsAngle + rotAmount) % 360;
+          var posAsAngle = Math.atan2(posZ, posX);
+          var radius = Math.hypot(posX, posZ);
 
-          posX = Math.sin(newAngle) * radius;
+          var newAngle = posAsAngle - (rotAmount * Math.PI / 180);
+
+          posX = Math.cos(newAngle) * radius;
           posY += heightAmount;
-          posZ = Math.cos(newAngle) * radius;
+          posZ = Math.sin(newAngle) * radius;
 
           stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][0] = posX;
           stairObj[i][_thing.parts.states._][0][_thing.parts.states.pos][1] = posY;
