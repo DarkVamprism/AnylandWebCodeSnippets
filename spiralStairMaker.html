@@ -32,6 +32,9 @@
         <div class='option-item'>
           <button id='btnUpdate' onclick="UpdateStairs()" disabled='true'>Update</button>
         </div>
+        <div class='option-item'>
+          <button id='btnUndo' onclick="UndoChanges()" disabled='true'>Undo</button>
+        </div>
       </div>
       <textarea name="" id="log" style="width: 100%; height: 80%" readonly></textarea>
     </div>
@@ -94,5 +97,9 @@
 
     #btnUpdate {
       background-color: #d0741f;
+    }
+
+    #btnUndo {
+      background-color: #933131;
     }
 </style>
