@@ -11,16 +11,13 @@ var loadType = 0;
 // Anyland Commands START
 // When ... then tell web MESSAGE
 function AnylandTold(data, isAuthority) {
-  /*if(isAuthority && data == "loadstep") {
-    document.getElementById("log").value = "";
-    msg("Told recieved, requesting Thing", "requesting");
-    AnylandRequestThing();
-  } else if(isAuthority && data == "createstairs") {
-    msg("Told recieved, requesting Thing", "requesting");
-    AnylandRequestThing();
+  if(data == "update") {
+    RequestThing(1, 'Updating Stairs', 'update');
+  } else if(data == "undo") {
+    RequestThing(2, 'Undoing Stairs', 'undo');
   } else {
     msg("Unauthorized user attempt", "noauth");
-  }*/
+  }
 }
 
 function AnylandGetThing(json) {
@@ -49,6 +46,7 @@ function AnylandGetThing(json) {
 // Anyland Commands END
 
 function RequestThing(type, message, tell = "") {
+  document.getElementById("log").value = "";
   loadType = type;
   msg(message, tell);
   AnylandRequestThing();
